@@ -5,7 +5,7 @@ import numpy as np
 from mnist import MNIST
 from sklearn.metrics import classification_report
 
-from hw1.helpers import TimeHelper, DataHelper
+from helpers import TimeHelper, DataHelper
 
 np.random.seed(420)
 

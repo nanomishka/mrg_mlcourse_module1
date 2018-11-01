@@ -6,8 +6,8 @@ from mnist import MNIST
 from sklearn.metrics import classification_report
 from sklearn.model_selection import train_test_split
 
-from hw1.SVM import SVMHelper as SVM
-from hw1.helpers import TimeHelper, DataHelper
+from SVM import SVMHelper as SVM
+from helpers import TimeHelper, DataHelper
 
 np.random.seed(100)
 
@@ -30,10 +30,6 @@ source.train_img_fname = file_x
 source.train_lbl_fname = file_y
 X, y = source.load_training()
 print(X.shape)
-
-sl = 10000
-X = X[:sl]
-y = y[:sl]
 
 step_1.finish()
 #################################################
