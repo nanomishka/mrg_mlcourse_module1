@@ -50,6 +50,16 @@ class SVMHelper:
         return cls.hinge_loss_dataset(predicted_values, y)
 
     @classmethod
+    def regul_loss_in_point(cls, C):
+        """ Regularization for coefficient """
+        def loss_fun(X, y, weights):
+            """ Loss function for coefficient """
+            result = cls.hinge_loss_in_point(X, y, weights) + 0.5 / C * np.linalg.norm(weights)
+            return result
+
+        return loss_fun
+
+    @classmethod
     def gradient(cls, loss_fun, X, y, model_weights, w_delta=0.01, empties=None):
         """ Gradient descent """
         current_loss = loss_fun(X, y, model_weights)
@@ -80,7 +90,7 @@ class SVMHelper:
         loss_before = loss_fun(X, y, cur_weights)
 
         while True:
-            happy_indexes = np.random.randint(0, X.shape[0], 1000)
+            happy_indexes = np.random.randint(0, X.shape[0], 10)
             # happy_indexes = range(X.shape[0])
 
             X_mod = X[happy_indexes]

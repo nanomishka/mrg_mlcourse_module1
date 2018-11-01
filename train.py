@@ -3,7 +3,7 @@ import argparse
 import numpy as np
 
 from mnist import MNIST
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, f1_score
 from sklearn.model_selection import train_test_split
 
 from SVM import SVMHelper as SVM
@@ -41,7 +41,7 @@ X = DataHelper.normalize(X)
 X = DataHelper.bias(X)
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
-# X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.25, random_state=1)
+X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.25, random_state=1)
 
 digits = np.unique(y_train)
 indexes = {}
@@ -58,26 +58,45 @@ step_2.finish()
 #################################################
 
 step_3 = TimeHelper('2: Learn model')
+
 learning_rate = 0.1
+C_range = [0.0001, 0.001, 0.1, 1.0, 10.0, 20.0, 50.0, 100.0, 1000.0]
 
-# learn every digit-model
-for d in digits:
-    print(d)
-    initial_weights[d] = SVM.init_weights(X_train, -0.5, 0.5)
-    initial_weights[d][empty_features] = 0
+best_f1 = 0
+best_weights = None
 
-    y_mod = np.ones(len(y_train)) * -1
-    y_mod[indexes[d]] = 1
-    optimal_weights = SVM.gradient_descent(
-        SVM.hinge_loss_in_point, X_train, y_mod, initial_weights[d], learning_rate, empty_features
-    )
-    initial_weights[d] = optimal_weights
+for C_coef in C_range:
+    print('Coefficient: {}:'.format(C_coef))
+
+    # learn every digit-model
+    for d in digits:
+        print('Class "{}":'.format(d))
+        initial_weights[d] = SVM.init_weights(X_train, -0.5, 0.5)
+        initial_weights[d][empty_features] = 0
+
+        loss_func = SVM.regul_loss_in_point(C_coef)
+
+        y_mod = np.ones(len(y_train)) * -1
+        y_mod[indexes[d]] = 1
+        optimal_weights = SVM.gradient_descent(
+            loss_func, X_train, y_mod, initial_weights[d], learning_rate, empty_features
+        )
+        initial_weights[d] = optimal_weights
+
+    predict_y = np.argmax(np.matmul(X_val, initial_weights.transpose()), 1)
+    f1 = f1_score(predict_y, y_val, average='macro')
+    print("Coefficient: %f, f1_avg: %f" % (C_coef, f1))
+
+    # Choose best weights
+    if f1 > best_f1:
+        best_f1 = f1
+        best_weights = initial_weights
 
 step_3.finish()
 #################################################
 
 step_4 = TimeHelper('2: Predict')
-predict_y = np.argmax(np.matmul(X_test, initial_weights.transpose()), 1)
+predict_y = np.argmax(np.matmul(X_test, best_weights.transpose()), 1)
 step_4.finish()
 
 print(classification_report(predict_y, y_test))
@@ -85,4 +104,4 @@ print(classification_report(predict_y, y_test))
 #################################################
 
 # save model
-initial_weights.dump(file_model)
+best_weights.dump(file_model)
