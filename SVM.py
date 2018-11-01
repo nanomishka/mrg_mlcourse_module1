@@ -90,8 +90,7 @@ class SVMHelper:
         loss_before = loss_fun(X, y, cur_weights)
 
         while True:
-            happy_indexes = np.random.randint(0, X.shape[0], 10)
-            # happy_indexes = range(X.shape[0])
+            happy_indexes = np.random.randint(0, X.shape[0], 1000)
 
             X_mod = X[happy_indexes]
             y_mod = y[happy_indexes]
