@@ -31,15 +31,13 @@ source.train_lbl_fname = file_y
 X, y = source.load_training()
 print(X.shape)
 
-step_1.finish()
-#################################################
-
-# TODO delete it
 sl = 10000
 X = X[:sl]
 y = y[:sl]
 
+step_1.finish()
 #################################################
+
 
 step_2 = TimeHelper('2: Preprocessing')
 

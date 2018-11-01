@@ -96,7 +96,7 @@ class SVMHelper:
                 learning_rate /= 2
 
             if verbose:
-                print("Iter: %i, lossd_value: %f, rate: %f" % (counter, loss_after, learning_rate))
+                print("Iter: %i, loss_value: %f, rate: %f" % (counter, loss_after, learning_rate))
             counter += 1
 
             if abs(loss_after - loss_before) < 0.0001 or learning_rate < 0.00001 or counter > 500:
