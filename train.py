@@ -6,8 +6,8 @@ from mnist import MNIST
 from sklearn.metrics import classification_report
 from sklearn.model_selection import train_test_split
 
-from hw1.SVM import SVMHelper as SVM
-from hw1.helpers import TimeHelper, DataHelper
+from SVM import SVMHelper as SVM
+from helpers import TimeHelper, DataHelper
 
 np.random.seed(100)
 
