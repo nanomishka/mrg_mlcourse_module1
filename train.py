@@ -31,10 +31,6 @@ source.train_lbl_fname = file_y
 X, y = source.load_training()
 print(X.shape)
 
-sl = 10000
-X = X[:sl]
-y = y[:sl]
-
 step_1.finish()
 #################################################
 
